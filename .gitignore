@@ -1,0 +1,4 @@
+venv/
+poultry_model.pth
+__pycache__/
+*.pyc
