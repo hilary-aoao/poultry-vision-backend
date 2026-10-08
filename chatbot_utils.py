@@ -99,30 +99,68 @@ def confidence_tier(disease_class: str, confidence: float) -> dict:
 
 
 _GUIDE = {
-    "high": "The tool is quite sure ({c:.0f}%). Say so plainly, and still suggest confirming with a vet if birds look sick.",
-    "moderate": "The tool is only moderately sure ({c:.0f}%). Say this plainly, and suggest checking the bird for the other signs or taking a second photo.",
-    "low": "The tool is NOT sure ({c:.0f}%). Say clearly that this is a weak guess, suggest a clearer photo in daylight, and suggest asking a vet.",
+    "high": "The farmer has already been told the match is strong. Do NOT mention how sure it is. You may still suggest confirming with a vet if birds look sick.",
+    "moderate": "The farmer has already been told this is only a moderate match. Do NOT repeat that. Suggest checking the bird for other signs, or taking a second photo.",
+    "low": "The farmer has already been told this is a weak guess. Do NOT repeat that. Advise them not to rely on it alone and to ask a vet.",
 }
 
 _EXPLAIN_SYSTEM = (
-    "You are the explanation assistant inside PoultryVision, a tool that looks at a photo of a chicken "
-    "dropping and suggests one of four results: Healthy, Coccidiosis, Salmonella, or New Castle Disease. "
-    "Write for a small-scale poultry farmer: short, plain, kind.\n"
+    "You are PoultryVision, a chat assistant for small-scale poultry farmers. The farmer has just sent a photo "
+    "of a chicken dropping, and the app has already told them the result and how sure it is. "
+    "Now explain what it means, in short plain sentences, speaking directly to the farmer.\n"
     "Rules:\n"
     "1. Use ONLY the facts in FACTS. Never add medicines, doses, causes, symptoms or numbers that are not in FACTS.\n"
-    "2. Begin with what the result is and how sure the tool is, following the CONFIDENCE GUIDE.\n"
-    "3. Then say what to do next, using the recommended_action and urgency facts.\n"
-    "4. If the facts say there is a real risk to people, say it clearly in its own sentence.\n"
-    "5. Never state it as a fact that the bird has the disease. Say 'this looks like' or 'the photo suggests'.\n"
-    "6. Maximum 130 words. Plain sentences only: no headings, no bullet points, no markdown."
+    "2. Do NOT repeat any confidence figure or percentage, and never call yourself 'the tool'. "
+    "Follow the CONFIDENCE GUIDE only for how careful to sound.\n"
+    "3. Start with what the farmer most needs to understand or do. Do not begin by restating the result's name and certainty.\n"
+    "4. Do not state as a fact that the bird has the disease. Use wording like 'if this is' or 'this can be'.\n"
+    "5. Then give the recommended action, using the urgency and recommended_action facts.\n"
+    "6. If the facts say there is a real risk to people, say it clearly in its own sentence.\n"
+    "7. Maximum 120 words. Plain sentences only: no headings, no bullet points, no markdown."
 )
 
 
 def _template_explanation(disease_class: str, confidence: float, tier: str) -> str:
     s = SUMMARIES[disease_class]
-    lead = {"high": "The photo suggests", "moderate": "The photo may show", "low": "This is only a weak guess, but the photo might show"}[tier]
-    return (f"{lead} {disease_class} ({confidence:.0f}% sure). {s['bird_symptoms']} {s['urgency']} "
-            f"{s['recommended_action']} {s['zoonotic_risk']}")
+    lead = {"high": "",
+            "moderate": "This is a good guess but not a certain one, so check the bird for other signs.",
+            "low": "This is only a weak guess, so please do not rely on it alone."}[tier]
+    signs = "What a normal dropping looks like" if disease_class == "Healthy" else "Signs to look for"
+    urgency = re.sub(r",?\s*and this specific result carries more uncertainty[^.]*", "", s["urgency"])
+    parts = [lead,
+             f"{signs}: {s['bird_symptoms']}",
+             f"How serious this is: {urgency}",
+             f"What to do: {s['recommended_action']}",
+             f"Risk to people: {s['zoonotic_risk']}"]
+    return _clean(" ".join(p for p in parts if p))
+
+
+def _chance_phrase(percent: float) -> str:
+    """Turn the runner-up probability into words, so the farmer never reads a second percentage."""
+    if percent >= 40:
+        return "a good chance"
+    if percent >= 28:
+        return "a fair chance"
+    return "a small chance"
+
+
+def _spoken_name(disease_class: str) -> str:
+    return {"Healthy": "healthy", "New Castle Disease": "Newcastle disease"}.get(disease_class, disease_class)
+
+
+def _bad_sentence(sentence: str) -> bool:
+    low = sentence.lower()
+    if "%" in sentence or "the tool" in low or "the model" in low:
+        return True
+    # "percent" is fine inside a real fact (for example a death rate), but not when it describes how sure we are
+    return "percent" in low and re.search(r"sure|certain|confiden|likel|chance|guess|match", low) is not None
+
+
+def _clean(text: str) -> str:
+    """Safety net: remove markdown, and drop any sentence that shows a percentage or says 'the tool' or 'the model'."""
+    text = re.sub(r"[*#`]+", "", text).strip()
+    sentences = re.findall(r"[^.!?]+[.!?]+\s*|[^.!?]+$", text)
+    return "".join(x for x in sentences if not _bad_sentence(x)).strip()
 
 
 def explain(disease_class: str, confidence: float, probabilities: Optional[Dict[str, float]] = None) -> dict:
@@ -132,33 +170,32 @@ def explain(disease_class: str, confidence: float, probabilities: Optional[Dict[
     info = confidence_tier(disease_class, confidence)
     tier = info["tier"]
 
-    facts = {k: s[k] for k in ("cause", "bird_symptoms", "zoonotic_risk", "urgency", "recommended_action")}
-    guide = _GUIDE[tier].format(c=confidence)
-    if info["reliability"] != "high":
-        guide += " In testing, this kind of result was less reliable than the others, so say that too."
-    runner = ""
+    # the second guess is added by this code, in fixed words, not left to the language model
+    runner_name, chance = "", ""
     if probabilities:
         others = sorted(((k, v) for k, v in probabilities.items() if k != disease_class), key=lambda kv: -kv[1])
         if others and others[0][1] >= 20:
-            runner = f"\nThe tool's second guess was {others[0][0]} ({others[0][1]:.0f}%). Mention in one short sentence that it could also be that."
-    user = f"RESULT: {disease_class}\nCONFIDENCE GUIDE: {guide}{runner}\nFACTS: {json.dumps(facts)}"
+            runner_name, chance = others[0][0], _chance_phrase(others[0][1])
 
-    runner_name = runner.split("(")[0] if runner else ""
-    key = ("explain", disease_class, int(round(confidence)), runner_name)
+    key = ("explain", disease_class, tier, runner_name, chance)
     hit = _cache_get(key)
     if hit:
         return hit
 
+    facts = {k: s[k] for k in ("cause", "bird_symptoms", "zoonotic_risk", "urgency", "recommended_action")}
+    user = f"RESULT: {disease_class}\nCONFIDENCE GUIDE: {_GUIDE[tier]}\nFACTS: {json.dumps(facts)}"
+
     used_ai = True
     try:
-        text = _chat(_EXPLAIN_SYSTEM, user, max_tokens=700).strip()
-        text = re.sub(r"[*#`]+", "", text)
+        text = _clean(_chat(_EXPLAIN_SYSTEM, user, max_tokens=700))
     except Exception as e:
         log.warning("explain: Groq call failed (%s: %s)", type(e).__name__, e)
         text = ""
     if len(text) < 40:
         used_ai = False
         text = _template_explanation(disease_class, confidence, tier)
+    if runner_name:
+        text += f"\n\nThere is {chance} it could also be {_spoken_name(runner_name)}."
 
     out = {"predicted_class": disease_class, "confidence": round(confidence, 1), "tier": tier,
            "reliability": info["reliability"], "explanation": text, "disclaimer": DISCLAIMER,
