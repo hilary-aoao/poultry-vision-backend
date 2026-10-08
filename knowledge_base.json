@@ -1,0 +1,150 @@
+{
+  "prediction_summaries": [
+    {
+      "id": "healthy_summary",
+      "disease_class": "Healthy",
+      "model_f1_score": 0.89,
+      "confidence_reliability": "high",
+      "cause": "Not applicable, this indicates no disease was detected based on the visual characteristics the model was trained to recognize.",
+      "bird_symptoms": "A normal dropping typically shows a firm, well-formed fecal portion with a distinct white or pale urate cap. No blood, no unusual green or watery texture, and no strong mucus content.",
+      "zoonotic_risk": "None specific to this result, general hygiene when handling any poultry droppings is still good practice.",
+      "urgency": "None. This is a reassuring result, but a single dropping is not a full health check.",
+      "recommended_action": "Continue normal monitoring of your flock. If you notice other symptoms in your birds that don't match what a single dropping shows, it's still worth a closer look or a vet consultation, since visual appearance alone doesn't rule out every possible issue.",
+      "source_note": "General poultry health indicators, not tied to a specific disease reference."
+    },
+    {
+      "id": "coccidiosis_summary",
+      "disease_class": "Coccidiosis",
+      "model_f1_score": 0.93,
+      "confidence_reliability": "high",
+      "cause": "Microscopic parasites called Eimeria protozoa, which infect the intestinal lining. Several species exist, each targeting a different part of the gut.",
+      "bird_symptoms": "Bloody diarrhea, lethargy, loss of appetite, pale combs, ruffled feathers, weight loss, and huddling. In severe cases, death can occur within days.",
+      "zoonotic_risk": "None. Coccidia species are highly host-specific, the species that infects chickens cannot infect humans or other animals.",
+      "urgency": "Serious for the flock, act promptly. Left untreated, coccidiosis can spread rapidly.",
+      "recommended_action": "Isolate affected birds if possible. Anticoccidial medication such as Amprolium (often sold as Corid) is the standard treatment, given in water for 5 to 7 days. Clean and dry the coop thoroughly, since the parasite spreads through oocysts in feces that can survive for weeks. Consult a vet if symptoms are severe or birds are dying.",
+      "source_note": "Veterinary and poultry health references (Merck Veterinary Manual, agricultural extension and poultry-keeping sources)."
+    },
+    {
+      "id": "salmonella_summary",
+      "disease_class": "Salmonella",
+      "model_f1_score": 0.90,
+      "confidence_reliability": "high",
+      "cause": "Salmonella bacteria, commonly Salmonella Enteritidis or Typhimurium in poultry. Birds are frequently asymptomatic carriers, shedding the bacteria without appearing sick.",
+      "bird_symptoms": "Often no visible symptoms in adult birds. Young chicks may show weakness, poor growth, diarrhea, or septicemia.",
+      "zoonotic_risk": "Real and significant. Salmonella is one of the most common zoonotic diseases transmitted from poultry to humans, through the fecal-oral route, contaminated eggs, or direct contact. Human symptoms include diarrhea, fever, and abdominal pain, usually starting one to three days after exposure. Children, the elderly, and immunocompromised individuals face higher risk.",
+      "urgency": "Serious, both for the flock and for human safety.",
+      "recommended_action": "Wash your hands thoroughly with soap immediately after contact. For the flock, strict hygiene, rodent control (a major spreader of Salmonella), and clean feed and water systems are the standard prevention approach. Vaccination is widely used at the commercial level to reduce shedding.",
+      "source_note": "Public health and veterinary sources (Ohio Department of Health, King County Public Health, dvm360, UMN Extension, peer-reviewed zoonotic disease research)."
+    },
+    {
+      "id": "newcastle_summary",
+      "disease_class": "New Castle Disease",
+      "model_f1_score": 0.72,
+      "confidence_reliability": "moderate",
+      "cause": "Newcastle disease virus (avian paramyxovirus type 1). Highly contagious, spread through the air over short distances and through contact with infected droppings or secretions.",
+      "bird_symptoms": "Respiratory signs (gasping, watery nasal discharge), neurological signs (tremors, twisted neck, paralysis, circling), and sometimes watery greenish diarrhea. Onset is often rapid, and mortality can reach up to 100 percent within two weeks in unvaccinated flocks.",
+      "zoonotic_risk": "Low for the general public. Rare, direct contact can cause mild, self-resolving conjunctivitis in humans, not a significant food safety concern.",
+      "urgency": "Potentially severe for the flock, and this specific result carries more uncertainty than the others given the model's lower reliability on this class.",
+      "recommended_action": "There is no cure or treatment once a bird is infected, this is confirmed directly by veterinary sources. Prevention through vaccination and strict biosecurity is the only real defense. If you suspect a genuine outbreak, this is a notifiable disease in many countries, contact a vet or local agricultural authority promptly, since standard practice involves isolating and often culling affected birds to contain spread.",
+      "source_note": "Veterinary references (Merck Veterinary Manual, peer-reviewed virology and poultry extension sources)."
+    }
+  ],
+  "follow_up_qa": [
+    {
+      "id": "healthy_1",
+      "disease_class": "Healthy",
+      "question": "How often should I check my flock's droppings?",
+      "answer": "A quick daily glance during normal feeding or coop cleaning is genuinely enough for most keepers, you're watching for a change from what's normal for your flock, not inspecting every single dropping closely."
+    },
+    {
+      "id": "healthy_2",
+      "disease_class": "Healthy",
+      "question": "Can a bird look healthy in its droppings but still have an underlying problem?",
+      "answer": "Yes. A single healthy-looking dropping is a good sign, but it's not a complete health check. Some conditions, including early Salmonella infection, cause no visible symptoms at all in adult birds. Watch the whole bird too, appetite, energy, and behavior, not just droppings alone."
+    },
+    {
+      "id": "coccidiosis_1",
+      "disease_class": "Coccidiosis",
+      "question": "How is coccidiosis treated?",
+      "answer": "The standard treatment is an anticoccidial medication, most commonly Amprolium (sold as Corid), given in the drinking water for 5 to 7 days. Most birds show visible improvement within a day of starting treatment. Since the treatment can reduce vitamin B absorption, a vitamin supplement afterward helps recovery."
+    },
+    {
+      "id": "coccidiosis_2",
+      "disease_class": "Coccidiosis",
+      "question": "How long does recovery from coccidiosis take?",
+      "answer": "With prompt treatment, full recovery typically takes up to a month, though first improvements are often visible within a day. Recovery speed depends on the bird's age, older birds with some existing immunity tend to recover faster than young chicks."
+    },
+    {
+      "id": "coccidiosis_3",
+      "disease_class": "Coccidiosis",
+      "question": "Can coccidiosis spread to my other birds or other animals?",
+      "answer": "It can spread to other chickens in your flock through oocysts shed in feces, which can survive for weeks in the environment. It cannot spread to humans or other animal species, the parasite is highly species-specific to poultry."
+    },
+    {
+      "id": "coccidiosis_4",
+      "disease_class": "Coccidiosis",
+      "question": "Which birds are most at risk of coccidiosis?",
+      "answer": "Young chicks, especially between 3 and 6 weeks old, are the most vulnerable, since they haven't yet built immunity. Healthy adult birds usually carry small numbers of the parasite without any problem, disease occurs when the parasite population multiplies out of control."
+    },
+    {
+      "id": "coccidiosis_5",
+      "disease_class": "Coccidiosis",
+      "question": "How can I prevent coccidiosis in my flock?",
+      "answer": "Keep litter dry, since the parasite thrives in wet conditions, this alone significantly reduces risk. Medicated chick feed containing a coccidiostat is commonly used for young chicks. Some keepers also use vaccination as an alternative to routine medication, allowing controlled exposure to build natural immunity."
+    },
+    {
+      "id": "salmonella_1",
+      "disease_class": "Salmonella",
+      "question": "How do I protect my family from Salmonella if I have backyard chickens?",
+      "answer": "Wash your hands thoroughly with soap for at least 30 seconds after handling chickens, eggs, or anything in their environment. Wear gloves when cleaning the coop, and avoid bringing birds inside the house. Never eat or drink around your flock."
+    },
+    {
+      "id": "salmonella_2",
+      "disease_class": "Salmonella",
+      "question": "Can I still eat eggs from a flock that might have Salmonella?",
+      "answer": "Collect eggs often and refrigerate them promptly. Discard any eggs that are cracked, leaking, or heavily soiled. To eat eggs safely, cook them thoroughly until both the yolk and white are fully solid, this is the most effective way to eliminate risk."
+    },
+    {
+      "id": "salmonella_3",
+      "disease_class": "Salmonella",
+      "question": "How can I prevent Salmonella in my flock?",
+      "answer": "Rodent control is genuinely critical, mice and rats are a major spreader of Salmonella, keep feed sealed and stored away from pests. Keep coops clean and well-ventilated, clean feeders and waterers regularly, and buy chicks from certified, health-tested sources where possible."
+    },
+    {
+      "id": "salmonella_4",
+      "disease_class": "Salmonella",
+      "question": "Why do birds with Salmonella often look completely healthy?",
+      "answer": "Many birds become asymptomatic carriers, meaning they shed the bacteria in their droppings without ever appearing sick themselves. This is exactly why hygiene and prevention matter even when your flock looks fine, and why an image-based check like this one has real value in catching what isn't otherwise visible."
+    },
+    {
+      "id": "newcastle_1",
+      "disease_class": "New Castle Disease",
+      "question": "Is there a cure for Newcastle disease?",
+      "answer": "No. Veterinary sources are direct on this, there is no approved treatment or antiviral therapy once a bird is infected. Prevention through vaccination and strict biosecurity is the only real defense against this disease."
+    },
+    {
+      "id": "newcastle_2",
+      "disease_class": "New Castle Disease",
+      "question": "How can Newcastle disease be prevented?",
+      "answer": "Vaccination is the primary tool, though it's worth knowing vaccines reduce severity and death rather than fully preventing infection. Combined with strict biosecurity, limiting contact with wild birds, disinfecting equipment, and controlling visitor access, vaccination substantially lowers flock risk."
+    },
+    {
+      "id": "newcastle_3",
+      "disease_class": "New Castle Disease",
+      "question": "What should I do if I suspect a real Newcastle disease outbreak?",
+      "answer": "Contact a vet or your local agricultural authority immediately, this is a notifiable disease in many countries. Isolate sick birds right away, and do not sell or give away birds from an affected flock, since this spreads the disease further. Standard containment practice often involves culling sick and exposed birds."
+    },
+    {
+      "id": "newcastle_4",
+      "disease_class": "New Castle Disease",
+      "question": "How contagious is Newcastle disease between birds?",
+      "answer": "Extremely contagious. It spreads through the air over short distances and through contact with infected droppings or secretions. In unvaccinated flocks, mortality can reach up to 100 percent within about two weeks."
+    },
+    {
+      "id": "newcastle_5",
+      "disease_class": "New Castle Disease",
+      "question": "Can Newcastle disease affect humans?",
+      "answer": "Rarely, and mildly. Direct, close contact with an infected bird can occasionally cause mild conjunctivitis (eye inflammation) in humans, which resolves on its own. It is not considered a significant public health or food safety risk."
+    }
+  ]
+}
