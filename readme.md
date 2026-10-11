@@ -85,4 +85,4 @@ This is a guide from a photo, not a vet's diagnosis. Results depend on photo qua
 
 ## Credits
 
-Built by Hilary Orefo as a personal learning project, with guidance from Claude (Anthropic). Dataset: add the dataset name and link here. Knowledge base sources: Ohio Department of Health, King County Public Health, dvm360, UMN Extension, the Merck Veterinary Manual and peer-reviewed zoonotic disease research.
+Built by Hilary Orefo as a personal learning project. Knowledge base sources: Ohio Department of Health, King County Public Health, dvm360, UMN Extension, the Merck Veterinary Manual and peer-reviewed zoonotic disease research.
